@@ -1,0 +1,19 @@
+<%- include('adminheader') -%>
+<div id="reportePromociones">
+  ...
+</div>
+
+<!-- myscripts -->
+<script>
+//variables globales
+  let doReport = <%= doReport %>;
+  let reporte = <%- reporte %>;
+  reporte = JSON.stringify(reporte);
+  reporte = reporte.replace("&amp;", "&");
+  reporte = JSON.parse(reporte);
+
+</script>
+
+
+<script src="../js/formReportePromociones.js"></script>
+<%- include('adminfooter') -%>

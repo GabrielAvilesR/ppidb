@@ -1,0 +1,31 @@
+let data = JSON.parse(req.body.data); 
+  let filename = "ReportedeVentas.xlsx";
+  let workbook = new xl.Workbook();
+
+  let sheet1 = workbook.addWorksheet('Hoja 1');
+  let rowCount = 1;
+
+  sheet1.cell(rowCount,1,rowCount++,8,true).string("Reporte de Ventas");
+  sheet1.cell(rowCount, 1).string("amecop");
+  sheet1.cell(rowCount, 2).string("nombre");
+  sheet1.cell(rowCount, 3).string("sector");
+  sheet1.cell(rowCount, 4).string("importe");
+  sheet1.cell(rowCount, 5).string("iva");
+  sheet1.cell(rowCount, 6).string("descuento");
+  sheet1.cell(rowCount++, 7).string("total");
+
+  for(let i = 0; i < data.length; i++){
+    sheet1.cell(rowCount, 1).number(data[i]["amecop"]);
+    sheet1.cell(rowCount, 2).string(data[i]["nombre"]);
+    sheet1.cell(rowCount, 3).string(data[i]["sector"]);
+    sheet1.cell(rowCount, 4).number(data[i]["importe"]);
+    sheet1.cell(rowCount, 5).number(data[i]["iva"]);
+    sheet1.cell(rowCount, 6).number(data[i]["descuento"]);
+    sheet1.cell(rowCount++, 7).number(data[i]["total"]);
+  }
+
+  workbook.write(filename, res, (err, stats) => {
+    if(err) throw err;
+    console.log(stats);
+    res.redirect("/general");
+  });

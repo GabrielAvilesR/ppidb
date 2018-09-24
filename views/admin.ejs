@@ -1,0 +1,165 @@
+<%- include('adminheader') -%>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">PPI</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Administrar Cuentas <span class="sr-only">(current)</span></a></li>
+        <!--<li><a href="#">Link</a></li>-->
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/logout">Cerrar Sesión</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container content">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center"> Crear una cuenta nueva </h1>
+        <div class="col-md-10">
+          <form class="form-horizontal" id="createUserForm" method="post" action="/admin/crearUsuario">
+            <div class="form-group">
+              <label for="username" class="col-sm-2 control-label">Usuario</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Usuario">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name" class="col-sm-2 control-label">Nombre</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Nombre">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="role" class="col-sm-2 control-label">Rol </label>
+              <div class="col-sm-10">
+                <select class="form-control" id="role" name="role">
+                  <option value="1">Administrador General</option>
+                  <option value="2">Supervisor</option>
+                  <option value="3">Compras</option>
+                  <option value="4">Control de Inventario</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="password" class="col-sm-2 control-label">Contraseña</label>
+              <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cpassword" class="col-sm-2 control-label">Confirmar contraseña</label>
+              <div class="col-sm-10">
+                <input type="password" class="form-control" id="cpassword" name="cpassword" placeholder="Confirmar contraseña">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <h5 id="createMessage"></h5>
+                <button type="button" id="createUserFormButton" class="btn btn-default">Crear Usuario</button>
+              </div>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h1 class="text-center"> Lista de Cuentas </h1>
+        <div id="listTable">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Rol</th>
+              </tr>
+            </thead>
+            <tbody id="listRows">
+
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div>
+
+</div>
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Editar Cuenta</h4>
+      </div>
+      <div class="modal-body">
+        <!-- poner aqui las opciones para editar usuario -->
+        <h4 class="text-center"> Editando a: <span id="modalUsername"></span></h4>
+        <h5> Cambiar contraseña </h5>
+        <form class="form-horizontal" id="changePasswordForm" method="post" action="/admin/changePassword">
+          <div class="form-group">
+            <input type="hidden" id="userIdentifier" name="username">
+          </div>
+          <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">Contraseña</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cpassword" class="col-sm-2 control-label">Confirmar contraseña</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="cpassword" placeholder="Confirmar contraseña">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="button" id="changePasswordFormButton" class="btn btn-default">Cambiar contraseña</button>
+            </div>
+          </div>
+        </form>
+        <h5>Borrar Cuenta </h5>
+        <form class="form-horizontal" id="deleteAccountForm" method="post" action="/admin/deleteUser">
+          <div class="form-group">
+            <input type="hidden" id="userIdDelete" name="userIdDelete">
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default">Borrar Cuenta</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- myscripts -->
+<script>
+
+  let validCreation = <%= validCreation %>;
+  let created = <%= created %>;
+  let users = <%- JSON.stringify(result) %>;
+  let changed = <%= changed %>;
+  let deleted = <%= deleted %>;
+</script>
+<script src="../js/validateCreateUserForm.js"></script>
+<script src="../js/loadUserRows.js"></script>
+<script src="../js/changePasswordForm.js"></script>
+<script src="../js/deleteAccountForm.js"></script>
+<%- include('adminfooter') -%>

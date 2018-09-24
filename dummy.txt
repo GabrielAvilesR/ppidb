@@ -1,0 +1,116 @@
+
+
+cuenta (crear o obtener)
+subcuenta (crear o obtener)
+agregar monto
+sumar a totales subcuenta
+sumar a totales cuenta
+
+cuenta (crear o obtener)
+//regresar lista de cuentas
+db.Cuentas.find({gasto:"directo"},{cuenta:1, _id:0});
+//crear una cuenta nueva
+db.Cuentas.insert({cuenta:"villa", gasto:"directo"});
+
+subcuenta (crear o obtener)
+//agregar a la lista de subcuentas en la cuenta
+db.Cuentas.update(
+  {cuenta:"villa"},
+  {$addToSet: {
+    subcuentas: {
+      subcuenta:"agua"
+    }
+  }}
+);
+//agregar a coleccion de subcuentas
+db.Subcuentas.insert({subcuenta: "luz", cuenta:"villa"});
+//leer la lista de subcuentas en la cuenta
+db.Cuentas.find({cuenta:"villa"}, {subcuentas:1, _id:0});
+
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz"},
+  {$addToSet:{montos: {
+    asunto:"pago de la luz y asi 2s",
+    monto:30,
+    fecha: "1-2-3",
+    detalles:"fdsfsdfsfsfdsffsdfwefqfdsf"
+  }}}
+);
+//modificar campos en un elemento de la lista de montos
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz", "montos.asunto":{$eq:"pago de la luz y asi"}},
+  {$set: {"montos.$.monto":34}}
+);
+
+//borrar un monto
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz"},
+  {$pull: {montos:{asunto:"pago de la luz y asi 2s"}}}
+);
+
+//monto
+//cuando se haga un cambio restar monto viejo y sumar nuevo
+//checar si existe el mes de totalxmes y totalxaño y agregar
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz"},
+  {$addToSet: {
+    totalxmes:{
+      año:2017,
+      mes:8,
+      monto:0
+    }
+  }}
+);
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz"},
+  {$addToSet: {
+    totalxaño:{
+      año:2017,
+      monto:0
+    }
+  }}
+);
+
+db.Subcuentas.find({cuenta:"villa", subcuenta:"luz", "totalxmes.año":2017, "totalxmes.mes":8}).count(); //si es 0, crear
+
+//existe, sumar monto
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz", "totalxmes.año":2017, "totalxmes.mes":{$eq:8}},
+  {$inc:{"totalxmes.$.monto":34}}
+);
+db.Subcuentas.update(
+  {cuenta:"villa", subcuenta:"luz", "totalxaño.año":{$eq:2017}},
+  {$inc:{"totalxaño.$.monto":34}}
+);
+//mismos metodos pero ahora que afecten a cuenta
+db.Cuentas.update(
+  {cuenta:"villa"},
+  {$addToSet: {
+    totalxmes:{
+      año:2017,
+      mes:8,
+      monto:0
+    }
+  }}
+);
+db.Cuentas.update(
+  {cuenta:"villa"},
+  {$addToSet: {
+    totalxaño:{
+      año:2017,
+      monto:0
+    }
+  }}
+);
+
+db.Cuentas.find({cuenta:"villa", "totalxmes.año":2017, "totalxmes.mes":8}).count(); //si es 0, crear
+
+//existe, sumar monto
+db.Cuentas.update(
+  {cuenta:"villa", "totalxmes.año":2017, "totalxmes.mes":{$eq:8}},
+  {$inc:{"totalxmes.$.monto":34}}
+);
+db.Cuentas.update(
+  {cuenta:"villa", "totalxaño.año":{$eq:2017}},
+  {$inc:{"totalxaño.$.monto":34}}
+);
